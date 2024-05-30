@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 
-const useSortProducts = (products) => {
+const useSortProducts = (products , ) => {
     const [sortedProduct, setSortedProduct] = useState("default");
     const [sortedProductData, setSortedProductData] = useState([]);
+
+    // console.log(searchTerm , "from hook ");
 
     useEffect(() => {
         if (products) {
@@ -35,7 +37,9 @@ const useSortProducts = (products) => {
         }
     };
 
-    return { sortedProduct, sortedProductData, handleSort };
+    // setDisplayProducts(sortedProductData)
+
+    return { sortedProduct, sortedProductData, handleSort , setSortedProductData };
 };
 
 export default useSortProducts;

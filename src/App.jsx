@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import "./App.css";
 import axios from "axios";
 import Product from "./Components/Product";
-import { FaArrowUpLong } from "react-icons/fa6";
-import { FaArrowDownLong } from "react-icons/fa6";
+import { FaArrowUpLong, FaArrowDownLong } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
 import { BsGridFill } from "react-icons/bs";
 import { FaList } from "react-icons/fa6";
@@ -13,10 +12,22 @@ import { MdOutlineArrowForwardIos } from "react-icons/md";
 import ProductList from "./Components/ProductList";
 import { TbArrowsSort } from "react-icons/tb";
 import useSortProducts from "./Hook/useSortProducts";
+import useSearchProducts from "./Hook/useSearchProducts";
+import useFilter from "./Hook/useFilter";
 
 function App() {
 	const [selectedProduct, setSelectedProduct] = useState(0);
+	const [searchTerm, setSearchTerm] = useState("");
 	const [layout, setLayout] = useState("grid");
+	const [filterConfig, setFilterConfig] = useState({
+		sortBy: "descending",//filter hook will convert it & render data in default mood.
+		searchTerm: "",
+		category: "all",
+		priceLowest: 0,
+		priceHighest: 5000,
+	});
+
+	console.log(filterConfig, "filtercongi");
 
 	const showModal = (product) => {
 		setSelectedProduct(product);
@@ -38,29 +49,70 @@ function App() {
 		queryFn: () => {
 			return axios
 				.get("https://fakestoreapi.com/products")
-				.then((item) => {
-					return (item = item?.data);
-				});
+				.then((item) => item?.data);
 		},
 	});
 
-	// useEffect(() => {
-	// 	if (products) {
-	// 		setSortedProductData(products);
-	// 	}
-	// }, [products]);
-
+	const filterProduct = useFilter(products , filterConfig)
 
 
 	if (error) return <div>Error: {error.message}</div>;
 
-  const { sortedProduct, sortedProductData, handleSort } = useSortProducts(products);
+	// const { sortedProduct, sortedProductData, handleSort , setSortedProductData} = useSortProducts(products , searchTerm);
 
-  
+	// const { handleSearch } = useSearchProducts(products , setSortedProductData , sortedProduct);
+
+
+
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
 
+	const handleSearchChange = (e) => {
+		// handleSearch(e.target.value);
+
+		////////////////////////////////////////////////////////
+
+		setFilterConfig((prevConfig) => ({
+			...prevConfig,
+			searchTerm: e.target.value,
+		}));
+		// ///////////////////////////////////////
+
+		setSearchTerm(e.target.value);
+	};
+
+	const handleSort = () => {
+		console.log(filterConfig.sortBy);
+		if (filterConfig.sortBy == "default") {
+			setFilterConfig((prevConfig) => ({
+				...prevConfig,
+				sortBy: "ascending",
+			}));
+		}
+		else if (filterConfig.sortBy == "ascending") {
+			setFilterConfig((prevConfig) => ({
+				...prevConfig,
+				sortBy: "descending",
+			}));
+		}
+		else if (filterConfig.sortBy == "descending") {
+			setFilterConfig((prevConfig) => ({
+				...prevConfig,
+				sortBy: "default",
+			}));
+		}
+		
+		
+	};
+
+
+
+	// useEffect(() => {
+	// 	products.filter(item => {
+
+	// 	})
+	// },[])
 
 	return (
 		<div className="bg-image">
@@ -69,6 +121,7 @@ function App() {
 				<label className="border-[1px] p-2 rounded-lg   flex-grow input-bordered border-blue-700 px-8 flex items-center gap-2">
 					<IoSearch />
 					<input
+						onChange={handleSearchChange}
 						type="text"
 						className="grow bg-transparent outline-none"
 						placeholder="Search Products"
@@ -82,11 +135,12 @@ function App() {
 					className="flex  justify-center items-center gap-2 input input-bordered"
 				>
 					Sort by{" "}
-					{sortedProduct == "descending" ? (
+					{filterConfig.sortBy == "descending" ? (
 						<FaArrowDownLong />
-					) :   (
-						sortedProduct == "ascending" ? <FaArrowUpLong /> : <TbArrowsSort />
-
+					) : filterConfig.sortBy == "ascending" ? (
+						<FaArrowUpLong />
+					) : (
+						<TbArrowsSort />
 					)}
 				</div>
 
@@ -250,7 +304,7 @@ function App() {
 				<div className="mx-5 w-3/4">
 					{layout == "grid" ? (
 						<div className="grid  grid-cols-3 gap-5">
-							{sortedProductData?.map((product) => (
+							{filterProduct?.map((product) => (
 								<Product
 									key={product.id}
 									item={product}
@@ -263,7 +317,7 @@ function App() {
 						</div>
 					) : (
 						<div className="space-y-4">
-							{sortedProductData?.map((product) => (
+							{filterProduct?.map((product) => (
 								<ProductList
 									key={product.id}
 									item={product}
