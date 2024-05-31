@@ -53,7 +53,7 @@ This project is a responsive product listing page created as part of an internsh
 ## Additional Information
 
 - **Mock API**: Product data is fetched from a mock API provided by [FakeStoreAPI](https://fakestoreapi.com/).
-- **Contact**: For any questions or further assistance, feel free to contact the author at [mustafiz8260@gmail.com](mailto:mustafiz8260@gmail.com).
+- **Contact**: For any questions or further assistance, feel free to contact me at [mustafiz8260@gmail.com](mailto:mustafiz8260@gmail.com).
 
 ## Live Link
 
