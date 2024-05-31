@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
 import "./App.css";
-import axios from "axios";
 import Product from "./Components/Product";
 import { FaArrowUpLong, FaArrowDownLong } from "react-icons/fa6";
 import { IoSearch } from "react-icons/io5";
@@ -11,194 +9,147 @@ import { useEffect, useState } from "react";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 import ProductList from "./Components/ProductList";
 import { TbArrowsSort } from "react-icons/tb";
-import useSortProducts from "./Hook/useSortProducts";
-import useSearchProducts from "./Hook/useSearchProducts";
 import useFilter from "./Hook/useFilter";
-
+import useFetch from "./Hook/useFetch";
+import loading from "./assets/Infinity@1x-1.0s-200px-200px.gif";
 function App() {
+	// Fetching data from FakeStore Api using useFetch custom Hook
+	const [products, isLoading, error] = useFetch(
+		"https://fakestoreapi.com/products"
+	);
 
-	// Fetching data from FakeStore Api
-	const {
-		isLoading,
-		error,
-		data: products,
-	} = useQuery({
-		queryKey: ["products"],
-		queryFn: () => {
-			return axios
-				.get("https://fakestoreapi.com/products")
-				.then((item) => item?.data);
-		},
-	});
-		const [category , setCategory] = useState([])
+	// State to store unique product categories of fetched Data (products) for filtering
+	const [category, setCategory] = useState([]);
 
-	const [checkedCategories, setCheckedCategories] = useState([]);
-	const [lowestPrice , setLowestPrice] = useState(0)
-	const [productsCategories , setProductCategories] = useState([])
+	// State to manage selected categories for filtering
+	const [checkedCategories, setCheckedCategories] = useState([]); 
+
+	// State to store the lowest price for adding min value in highestPrice input
+	const [lowestPrice, setLowestPrice] = useState(0);
+
+	// state to hold the data of which product is clicked to get detailed view in modal
 	const [selectedProduct, setSelectedProduct] = useState(0);
-	const [selectedCategory, setSelectedCategory] = useState("")
-	const [searchTerm, setSearchTerm] = useState("");
-	const [layout, setLayout] = useState("grid");
-	const [filterConfig, setFilterConfig] = useState({
-		sortBy: "descending",//filter hook will convert it & render data in default mood.
-		searchTerm: "",
-		category:  category,
-		priceLowest: 0,
-		priceHighest: 5000,
 
+	// used to hold the layout mood grid and list
+	const [layout, setLayout] = useState("grid");
+
+	// this is predefined config hook of different filter mood
+	const [filterConfig, setFilterConfig] = useState({
+		sortBy: "descending", //filter hook will convert it & render data in default mood.
+		searchTerm: "", // input search data
+		category: category, // product category
+		priceLowest: 0, //lowest price of product
+		priceHighest: 50000, //highest price of product
 	});
 
-	// console.log(lowestPrice);
+	// use Filter is a custom hook that apply all type of  filter based on filterConfig
+	const filterProduct = useFilter(products, filterConfig, setFilterConfig);
 
-	// console.log(category,"cat3egory");
-	
+	// getting the unique product category name and setting in filterConfig
+	const categoryList = new Set(
+		products?.map((product) => product.category.toUpperCase())
+	);
 
-	
-		const categoryList =  new Set(products?.map(product => product.category.toUpperCase()))
-	useEffect(()=> {
-		if(products){
-
-			const productCategory = products?.map(item => item?.category)
-			// console.log(categoryList);
-			setCategory(categoryList)
+	useEffect(() => {
+		if (products) {
+			setCategory(categoryList);
+			setCheckedCategories([...categoryList]);
 			setFilterConfig((prevConfig) => ({
 				...prevConfig,
-				category: [...categoryList]
-			}))
-			setCheckedCategories([...categoryList])
-			setProductCategories(productCategory)
-			}
+				category: [...categoryList],
+			}));
+		}
+	}, [products]);
 
-
-	},[products])
-
-
-
-
-	
-
-	// console.log(category , "category");
-
-
-
-
-	// console.log(filterConfig, "filtercongi");
-
-	
-	
-	const filterProduct = useFilter(products , filterConfig , setFilterConfig)
-
+	if (isLoading) {
+		return (
+			<div className="h-screen  flex justify-center items-center flex-col">
+				{" "}
+				<span>
+					<img src={loading} className="w-20 " alt="" />
+				</span>
+				Loading...
+			</div>
+		);
+	}
 
 	if (error) return <div>Error: {error.message}</div>;
 
-	// const { sortedProduct, sortedProductData, handleSort , setSortedProductData} = useSortProducts(products , searchTerm);
-
-	// const { handleSearch } = useSearchProducts(products , setSortedProductData , sortedProduct);
-
-
-
-	if (isLoading) {
-		return <div>Loading...</div>;
-	}
-
+	// This function will set the search input to filterConfig
 	const handleSearchChange = (e) => {
-		// handleSearch(e.target.value);
-
-		////////////////////////////////////////////////////////
-
 		setFilterConfig((prevConfig) => ({
 			...prevConfig,
 			searchTerm: e.target.value,
-		category:  [...categoryList],
-		priceLowest: 0,
-		priceHighest: 5000,
+			category: [...categoryList],
+			priceLowest: 0,
+			priceHighest: 5000,
 		}));
-		// ///////////////////////////////////////
-
-		setSearchTerm(e.target.value);
-		
 	};
 
+	// This function is used to set the sortBy value in filterConfig based on it's previous state
 	const handleSort = () => {
-		// console.log(filterConfig.sortBy);
+
 		if (filterConfig.sortBy == "default") {
 			setFilterConfig((prevConfig) => ({
 				...prevConfig,
 				sortBy: "ascending",
 			}));
-		}
-		else if (filterConfig.sortBy == "ascending") {
+		} else if (filterConfig.sortBy == "ascending") {
 			setFilterConfig((prevConfig) => ({
 				...prevConfig,
 				sortBy: "descending",
 			}));
-		}
-		else if (filterConfig.sortBy == "descending") {
+		} else if (filterConfig.sortBy == "descending") {
 			setFilterConfig((prevConfig) => ({
 				...prevConfig,
 				sortBy: "default",
 			}));
 		}
-		
-		
 	};
 
-
-
-	// useEffect(() => {
-	// 	products.filter(item => {
-
-	// 	})
-	// },[])
-
-	const handleCategory = (item ) =>{
-		// console.log(item,"itemeeeeeeeeeeeeeeee");
-		setSelectedCategory(item)
-
-	}
-
-	// console.log("checkedcategories" ,checkedCategories);
+	// This is function detects which checkbox are checked and set in in a array and set the array in filterConfig category
 	const handleCheckboxChange = (event) => {
 		const { id, checked } = event.target;
 
-	  
-		// console.log(id, checked);
 		if (id && checked) {
-		  console.log(id, checked);
-	  
-		  setCheckedCategories((prevCheckedCategories) => {
-			const updatedCategories = [...prevCheckedCategories, id];
-			setFilterConfig((prevConfig) => ({
-			  ...prevConfig,
-			  category: updatedCategories,
-			}));
-			return updatedCategories;
-		  });
-		} else {
-		  setCheckedCategories((prevCheckedCategories) => {
-			const updatedCategories = prevCheckedCategories.filter(category => category !== id);
-			setFilterConfig((prevConfig) => ({
-			  ...prevConfig,
-			  category: updatedCategories,
-			}));
-			return updatedCategories;
-		  });
-		}
-	  };
 
-	  const handleSubmitPrice = (e) => {
-		e.preventDefault()
-		const priceHighest = e.target.highest_price.value
-		const priceLowest = e.target.lowest_price.value
+			setCheckedCategories((prevCheckedCategories) => {
+				const updatedCategories = [...prevCheckedCategories, id];
+				setFilterConfig((prevConfig) => ({
+					...prevConfig,
+					category: updatedCategories,
+				}));
+				return updatedCategories;
+			});
+		} else {
+			setCheckedCategories((prevCheckedCategories) => {
+				const updatedCategories = prevCheckedCategories.filter(
+					(category) => category !== id
+				);
+				setFilterConfig((prevConfig) => ({
+					...prevConfig,
+					category: updatedCategories,
+				}));
+				return updatedCategories;
+			});
+		}
+	};
+	
+
+	// This function takes the lowest price and highest price form input and update it into filterConfig priceHighest and priceLowest
+	const handleSubmitPrice = (e) => {
+		e.preventDefault();
+		const priceHighest = e.target.highest_price.value;
+		const priceLowest = e.target.lowest_price.value;
 		setFilterConfig((prevConfig) => ({
 			...prevConfig,
 			priceHighest: priceHighest,
 			priceLowest: priceLowest,
-		  }));
-		// console.log(  priceLowest , priceHighest );
-	  }
-	  
+		}));
+	};
 
+
+	// This function is used to open modal based on products when view detail button is clicked
 	const showModal = (product) => {
 		setSelectedProduct(product);
 		const modal = document.getElementById("product-detail");
@@ -209,11 +160,10 @@ function App() {
 		}
 	};
 
-
 	return (
-		<div className="bg-image">
+		<div className="bg-image  ">
 			{/* Header section  */}
-			<div className="flex   gap-5 px-14 py-10">
+			<div className="flex      gap-5 px-14 pt-6">
 				<label className="border-[1px] p-2 rounded-lg   flex-grow input-bordered border-blue-700 px-8 flex items-center gap-2">
 					<IoSearch />
 					<input
@@ -267,23 +217,22 @@ function App() {
 
 			{/* product Section */}
 
-			<div className="flex ">
+			<div className="flex mt-4 ">
 				{/* Category section */}
-				<div className="w-1/4 pl-10 pt-0 ">
-					
+				<div className="w-1/4    pl-10 pt-0 ">
+					<h1 className="text-2xl  px-4 font-medium">Filter From</h1>
 
-					<h1 className="text-2xl  px-4 font-medium">
-						Filter From
-					</h1>
-
-					<form onSubmit={handleSubmitPrice} className="flex mt-5 px-4 items-center gap-4">
-						<input onChange={(e) => setLowestPrice(e.target.value)}
+					<form
+						onSubmit={handleSubmitPrice}
+						className="flex mt-5 px-4 items-center gap-4"
+					>
+						<input
+							onChange={(e) => setLowestPrice(e.target.value)}
 							type="number"
-							className="input bg-transparent border-black input-bordered w-full  " 
+							className="input bg-transparent border-black input-bordered w-full  "
 							name="lowest_price"
 							placeholder="$ From"
 							min={0}
-							
 						/>
 						<span className="font-bold">-</span>
 						<input
@@ -292,7 +241,6 @@ function App() {
 							name="highest_price"
 							placeholder="$ To"
 							min={lowestPrice}
-
 						/>
 						<button type="submit" className="btn btn-primary">
 							{" "}
@@ -304,9 +252,9 @@ function App() {
 					</h1>
 
 					<div className="text-base mt-5 font-normal text-black ">
-						
-						{
-							[...category]?.map((item , index) =><label key={index}  
+						{[...category]?.map((item, index) => (
+							<label
+								key={index}
 								htmlFor={item}
 								className="py-2 px-4 flex justify-between items-center"
 							>
@@ -317,18 +265,16 @@ function App() {
 										className="checkbox rounded-none checkbox-sm checkbox-primary"
 										defaultChecked
 										onChange={handleCheckboxChange}
-
 									/>
 									<h2 className=" "> {item}</h2>
 								</label>
-							</label> )
-						}
-						
+							</label>
+						))}
 					</div>
 				</div>
 
 				{/* product viewing section */}
-				<div className="mx-5 w-3/4">
+				<div className="px-5  w-3/4 ">
 					{layout == "grid" ? (
 						<div className="grid  grid-cols-3 gap-5">
 							{filterProduct?.map((product) => (
@@ -339,7 +285,11 @@ function App() {
 								/>
 							))}
 							<ProductDetailModal
-								item={selectedProduct || products[0]}
+								item={
+									selectedProduct || products
+										? products[0]
+										: ""
+								}
 							/>
 						</div>
 					) : (

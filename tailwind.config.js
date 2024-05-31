@@ -7,7 +7,9 @@
 
 
   theme: {
-    extend: {},
+    extend: {height: {
+      'custom': 'calc(100vh - 112px)',
+    }},
   },
   plugins: [require("daisyui")],}
 
