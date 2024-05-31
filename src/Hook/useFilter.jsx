@@ -7,8 +7,15 @@ const useFilter = (initialProducts, filterConfig) => {
         const searchTerm = filterConfig.searchTerm.toLowerCase();
         const categories = filterConfig.category
         const sortedProduct = filterConfig.sortBy;
+        const priceLowest = filterConfig.priceLowest
+        const priceHighest = filterConfig.priceHighest
+
 
         let searchFiltererData = initialProducts?.filter((item) => {
+
+            
+
+
             const title = item?.title.toLowerCase();
             const description = item?.description.toLowerCase();
             const price = JSON.stringify(item?.price);
@@ -30,21 +37,28 @@ const useFilter = (initialProducts, filterConfig) => {
             return categoriesLowerCase.includes(item?.category.toLowerCase())
         })
 
-        
+
+        let priceFilterData = categoryFiltererData?.filter(item => {
+        return  item?.price  > priceLowest  && item?.price < priceHighest
+
+        }) 
+
+        console.log("pricefiltertdata",priceFilterData , );
+
 
 
 
         let sortedData;
         if (sortedProduct === "default") {
-            sortedData = categoryFiltererData?.sort(
+            sortedData = priceFilterData?.sort(
                 (a, b) => parseFloat(b.price) - parseFloat(a.price)
             );
         } else if (sortedProduct === "ascending") {
-            sortedData = categoryFiltererData?.sort(
+            sortedData = priceFilterData?.sort(
                 (a, b) => parseFloat(a.price) - parseFloat(b.price)
             );
         } else if (sortedProduct === "descending") {
-            sortedData = categoryFiltererData;
+            sortedData = priceFilterData;
         }
 
         setSortedProductData(sortedData);
@@ -52,7 +66,7 @@ const useFilter = (initialProducts, filterConfig) => {
     }, [initialProducts, filterConfig]);
 
 
-    console.log(sortedProductData);
+    // console.log(sortedProductData);
 
     return sortedProductData;
 };

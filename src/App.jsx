@@ -33,6 +33,7 @@ function App() {
 		const [category , setCategory] = useState([])
 
 	const [checkedCategories, setCheckedCategories] = useState([]);
+	const [lowestPrice , setLowestPrice] = useState(0)
 	const [productsCategories , setProductCategories] = useState([])
 	const [selectedProduct, setSelectedProduct] = useState(0);
 	const [selectedCategory, setSelectedCategory] = useState("")
@@ -46,9 +47,9 @@ function App() {
 		priceHighest: 5000,
 	});
 
-	console.log(checkedCategories);
+	// console.log(lowestPrice);
 
-	console.log(category,"cat3egory");
+	// console.log(category,"cat3egory");
 	
 
 	useEffect(()=> {
@@ -80,7 +81,7 @@ function App() {
 
 
 
-	console.log(filterConfig, "filtercongi");
+	// console.log(filterConfig, "filtercongi");
 
 	
 	
@@ -151,12 +152,12 @@ function App() {
 
 	}
 
-	console.log("checkedcategories" ,checkedCategories);
+	// console.log("checkedcategories" ,checkedCategories);
 	const handleCheckboxChange = (event) => {
 		const { id, checked } = event.target;
 
 	  
-		console.log(id, checked);
+		// console.log(id, checked);
 		if (id && checked) {
 		  console.log(id, checked);
 	  
@@ -179,6 +180,18 @@ function App() {
 		  });
 		}
 	  };
+
+	  const handleSubmitPrice = (e) => {
+		e.preventDefault()
+		const priceHighest = e.target.highest_price.value
+		const priceLowest = e.target.lowest_price.value
+		setFilterConfig((prevConfig) => ({
+			...prevConfig,
+			priceHighest: priceHighest,
+			priceLowest: priceLowest,
+		  }));
+		// console.log(  priceLowest , priceHighest );
+	  }
 	  
 
 	const showModal = (product) => {
@@ -258,23 +271,29 @@ function App() {
 						Filter From
 					</h1>
 
-					<div className="flex mt-5 px-4 items-center gap-4">
-						<input
+					<form onSubmit={handleSubmitPrice} className="flex mt-5 px-4 items-center gap-4">
+						<input onChange={(e) => setLowestPrice(e.target.value)}
 							type="number"
-							className="input bg-transparent border-black input-bordered w-full  "
+							className="input bg-transparent border-black input-bordered w-full  " 
+							name="lowest_price"
 							placeholder="$ From"
+							min={0}
+							
 						/>
 						<span className="font-bold">-</span>
 						<input
 							type="number"
 							className="input  bg-transparent border-black input-bordered w-full  "
+							name="highest_price"
 							placeholder="$ To"
+							min={lowestPrice}
+
 						/>
-						<button className="btn btn-primary">
+						<button type="submit" className="btn btn-primary">
 							{" "}
 							<MdOutlineArrowForwardIos />
 						</button>
-					</div>
+					</form>
 					<h1 className="text-2xl mt-8 px-4 font-medium">
 						Filter Check
 					</h1>
