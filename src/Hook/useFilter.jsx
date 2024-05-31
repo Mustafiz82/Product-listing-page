@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const useFilter = (initialProducts, filterConfig) => {
+const useFilter = (initialProducts, filterConfig ) => {
     const [sortedProductData, setSortedProductData] = useState([]);
 
     useEffect(() => {
@@ -12,6 +12,7 @@ const useFilter = (initialProducts, filterConfig) => {
 
 
         let searchFiltererData = initialProducts?.filter((item) => {
+            console.log(categories,"usefilter categories");
 
             
 

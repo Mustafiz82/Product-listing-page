@@ -22,8 +22,12 @@ const Product = ({ item , showModal }) => {
     
 	return (
 		<div className="w-full flex flex-col justify-between bg-white border  rounded-lg  text-black ">
+
+			<div className="w-80 relative h-80 mx-auto ">
+			<img className="p-8 absolute top-1/2 left-1/2 -translate-y-1/2  -translate-x-1/2 max-h-full mx-auto  overflow-hidden rounded-t-lg" src={image} alt={title} />
+
+			</div>
 			
-				<img className="p-8 w-80 h-80 obj rounded-t-lg" src={image} alt={title} />
 			<div className="px-5 pb-5">
 				<a href="#">
                 <h5

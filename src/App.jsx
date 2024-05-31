@@ -45,6 +45,7 @@ function App() {
 		category:  category,
 		priceLowest: 0,
 		priceHighest: 5000,
+
 	});
 
 	// console.log(lowestPrice);
@@ -52,10 +53,10 @@ function App() {
 	// console.log(category,"cat3egory");
 	
 
+	
+		const categoryList =  new Set(products?.map(product => product.category.toUpperCase()))
 	useEffect(()=> {
 		if(products){
-		
-			const categoryList =  new Set(products?.map(product => product.category.toUpperCase()))
 
 			const productCategory = products?.map(item => item?.category)
 			// console.log(categoryList);
@@ -85,7 +86,7 @@ function App() {
 
 	
 	
-	const filterProduct = useFilter(products , filterConfig)
+	const filterProduct = useFilter(products , filterConfig , setFilterConfig)
 
 
 	if (error) return <div>Error: {error.message}</div>;
@@ -108,10 +109,14 @@ function App() {
 		setFilterConfig((prevConfig) => ({
 			...prevConfig,
 			searchTerm: e.target.value,
+		category:  [...categoryList],
+		priceLowest: 0,
+		priceHighest: 5000,
 		}));
 		// ///////////////////////////////////////
 
 		setSearchTerm(e.target.value);
+		
 	};
 
 	const handleSort = () => {
