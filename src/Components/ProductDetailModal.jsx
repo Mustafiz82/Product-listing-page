@@ -6,12 +6,13 @@ const ProductDetailModal = ({ item }) => {
     
     const {title, price,id ,description ,category , image, rating } = item
 
-    console.log(item);
+    // console.log(item);
 
 	return (
 		<div>
 			
-			<dialog id="product-detail" className="modal rounded-none">
+			<dialog id="product-de
+            tail" className="modal rounded-none">
 				<div className="modal-box rounded-none  min-w-[70%] min-h-[80%]">
 					<div className="flex justify-center items-center">
                         <div className="flex-1">

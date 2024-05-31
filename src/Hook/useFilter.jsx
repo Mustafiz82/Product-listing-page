@@ -5,6 +5,7 @@ const useFilter = (initialProducts, filterConfig) => {
 
     useEffect(() => {
         const searchTerm = filterConfig.searchTerm.toLowerCase();
+        const categories = filterConfig.category
         const sortedProduct = filterConfig.sortBy;
 
         let searchFiltererData = initialProducts?.filter((item) => {
@@ -21,17 +22,29 @@ const useFilter = (initialProducts, filterConfig) => {
             );
         });
 
+
+      
+        const categoriesLowerCase = categories?.map(item => item?.toLowerCase())
+
+        let categoryFiltererData = searchFiltererData?.filter(item => {
+            return categoriesLowerCase.includes(item?.category.toLowerCase())
+        })
+
+        
+
+
+
         let sortedData;
         if (sortedProduct === "default") {
-            sortedData = searchFiltererData?.sort(
+            sortedData = categoryFiltererData?.sort(
                 (a, b) => parseFloat(b.price) - parseFloat(a.price)
             );
         } else if (sortedProduct === "ascending") {
-            sortedData = searchFiltererData?.sort(
+            sortedData = categoryFiltererData?.sort(
                 (a, b) => parseFloat(a.price) - parseFloat(b.price)
             );
         } else if (sortedProduct === "descending") {
-            sortedData = searchFiltererData;
+            sortedData = categoryFiltererData;
         }
 
         setSortedProductData(sortedData);

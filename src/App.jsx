@@ -16,28 +16,6 @@ import useSearchProducts from "./Hook/useSearchProducts";
 import useFilter from "./Hook/useFilter";
 
 function App() {
-	const [selectedProduct, setSelectedProduct] = useState(0);
-	const [searchTerm, setSearchTerm] = useState("");
-	const [layout, setLayout] = useState("grid");
-	const [filterConfig, setFilterConfig] = useState({
-		sortBy: "descending",//filter hook will convert it & render data in default mood.
-		searchTerm: "",
-		category: "all",
-		priceLowest: 0,
-		priceHighest: 5000,
-	});
-
-	console.log(filterConfig, "filtercongi");
-
-	const showModal = (product) => {
-		setSelectedProduct(product);
-		const modal = document.getElementById("product-detail");
-		if (modal) {
-			modal.showModal();
-		} else {
-			console.error("Modal element not found");
-		}
-	};
 
 	// Fetching data from FakeStore Api
 	const {
@@ -52,7 +30,60 @@ function App() {
 				.then((item) => item?.data);
 		},
 	});
+		const [category , setCategory] = useState([])
 
+	const [checkedCategories, setCheckedCategories] = useState([]);
+	const [productsCategories , setProductCategories] = useState([])
+	const [selectedProduct, setSelectedProduct] = useState(0);
+	const [selectedCategory, setSelectedCategory] = useState("")
+	const [searchTerm, setSearchTerm] = useState("");
+	const [layout, setLayout] = useState("grid");
+	const [filterConfig, setFilterConfig] = useState({
+		sortBy: "descending",//filter hook will convert it & render data in default mood.
+		searchTerm: "",
+		category:  category,
+		priceLowest: 0,
+		priceHighest: 5000,
+	});
+
+	console.log(checkedCategories);
+
+	console.log(category,"cat3egory");
+	
+
+	useEffect(()=> {
+		if(products){
+		
+			const categoryList =  new Set(products?.map(product => product.category.toUpperCase()))
+
+			const productCategory = products?.map(item => item?.category)
+			// console.log(categoryList);
+			setCategory(categoryList)
+			setFilterConfig((prevConfig) => ({
+				...prevConfig,
+				category: [...categoryList]
+			}))
+			setCheckedCategories([...categoryList])
+			setProductCategories(productCategory)
+			}
+
+
+	},[products])
+
+
+
+
+	
+
+	// console.log(category , "category");
+
+
+
+
+	console.log(filterConfig, "filtercongi");
+
+	
+	
 	const filterProduct = useFilter(products , filterConfig)
 
 
@@ -83,7 +114,7 @@ function App() {
 	};
 
 	const handleSort = () => {
-		console.log(filterConfig.sortBy);
+		// console.log(filterConfig.sortBy);
 		if (filterConfig.sortBy == "default") {
 			setFilterConfig((prevConfig) => ({
 				...prevConfig,
@@ -113,6 +144,53 @@ function App() {
 
 	// 	})
 	// },[])
+
+	const handleCategory = (item ) =>{
+		// console.log(item,"itemeeeeeeeeeeeeeeee");
+		setSelectedCategory(item)
+
+	}
+
+	console.log("checkedcategories" ,checkedCategories);
+	const handleCheckboxChange = (event) => {
+		const { id, checked } = event.target;
+
+	  
+		console.log(id, checked);
+		if (id && checked) {
+		  console.log(id, checked);
+	  
+		  setCheckedCategories((prevCheckedCategories) => {
+			const updatedCategories = [...prevCheckedCategories, id];
+			setFilterConfig((prevConfig) => ({
+			  ...prevConfig,
+			  category: updatedCategories,
+			}));
+			return updatedCategories;
+		  });
+		} else {
+		  setCheckedCategories((prevCheckedCategories) => {
+			const updatedCategories = prevCheckedCategories.filter(category => category !== id);
+			setFilterConfig((prevConfig) => ({
+			  ...prevConfig,
+			  category: updatedCategories,
+			}));
+			return updatedCategories;
+		  });
+		}
+	  };
+	  
+
+	const showModal = (product) => {
+		setSelectedProduct(product);
+		const modal = document.getElementById("product-detail");
+		if (modal) {
+			modal.showModal();
+		} else {
+			console.error("Modal element not found");
+		}
+	};
+
 
 	return (
 		<div className="bg-image">
@@ -173,34 +251,10 @@ function App() {
 
 			<div className="flex ">
 				{/* Category section */}
-				<div className="w-1/4 pl-10 pt-2 ">
-					<h1 className="text-2xl px-4 font-medium">
-						{" "}
-						chose category{" "}
-					</h1>
-					<div className="text-base mt-5 font-normal text-black ">
-						<div className="py-2 px-4 flex justify-between items-center">
-							<h2 className=" ">All Category</h2>
-							<p>05</p>
-						</div>
-						<div className="py-2 px-4 flex justify-between items-center">
-							<h2 className="">jewelry</h2>
-							<p>05</p>
-						</div>
-						<div className="py-2 bg-blue-700 text-white  rounded-full px-4 flex justify-between items-center">
-							<h2 className="  ">Men's clothing</h2> <p>05</p>
-						</div>
-						<div className="py-2 px-4 flex justify-between items-center">
-							<h2 className="">Women's clothing</h2>
-							<p>05</p>
-						</div>
-						<div className="py-2 px-4 flex justify-between items-center">
-							<h2 className="">Electronics</h2>
-							<p>05</p>
-						</div>
-					</div>
+				<div className="w-1/4 pl-10 pt-0 ">
+					
 
-					<h1 className="text-2xl mt-8 px-4 font-medium">
+					<h1 className="text-2xl  px-4 font-medium">
 						Filter From
 					</h1>
 
@@ -226,77 +280,26 @@ function App() {
 					</h1>
 
 					<div className="text-base mt-5 font-normal text-black ">
-						<label
-							for="All-category"
-							className="py-2 px-4 flex justify-between items-center"
-						>
-							<div for="All-category" className="flex gap-2">
-								<input
-									type="checkbox"
-									defaultChecked
-									id="All-category"
-									className="checkbox rounded-none checkbox-sm checkbox-primary"
-								/>
-								<h2 className=" "> All Category</h2>
-							</div>
-							<p>05</p>
-						</label>
-						<label
-							for="jewelry"
-							className="py-2 px-4 flex justify-between items-center"
-						>
-							<label className="flex gap-2">
-								<input
-									type="checkbox"
-									id="jewelry"
-									className="checkbox rounded-none checkbox-sm checkbox-primary"
-								/>
-								<h2 className=" "> jewelry</h2>
-							</label>
-							<p>05</p>
-						</label>
-						<label
-							for="men's-clothing"
-							className="py-2 px-4 flex justify-between items-center"
-						>
-							<div className="flex gap-2">
-								<input
-									type="checkbox"
-									id="men's-clothing"
-									className="checkbox rounded-none checkbox-sm checkbox-primary"
-								/>
-								<h2 className=" "> Men's clothing</h2>
-							</div>
-							<p>05</p>
-						</label>
-						<label
-							for="women's-clothing"
-							className="py-2 px-4 flex justify-between items-center"
-						>
-							<div className="flex gap-2">
-								<input
-									type="checkbox"
-									id="women's-clothing"
-									className="checkbox rounded-none checkbox-sm checkbox-primary"
-								/>
-								<h2 className=" "> Women's clothing</h2>
-							</div>
-							<p>05</p>
-						</label>
-						<label
-							for="Electronics"
-							className="py-2 px-4 flex justify-between items-center"
-						>
-							<div className="flex gap-2">
-								<input
-									type="checkbox"
-									id="Electronics"
-									className="checkbox rounded-none checkbox-sm checkbox-primary"
-								/>
-								<h2 className=" ">Electronics </h2>
-							</div>
-							<p>05</p>
-						</label>
+						
+						{
+							[...category]?.map((item , index) =><label key={index}  
+								htmlFor={item}
+								className="py-2 px-4 flex justify-between items-center"
+							>
+								<label className="flex gap-2">
+									<input
+										type="checkbox"
+										id={item}
+										className="checkbox rounded-none checkbox-sm checkbox-primary"
+										defaultChecked
+										onChange={handleCheckboxChange}
+
+									/>
+									<h2 className=" "> {item}</h2>
+								</label>
+							</label> )
+						}
+						
 					</div>
 				</div>
 
