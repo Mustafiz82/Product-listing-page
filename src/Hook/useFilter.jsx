@@ -12,7 +12,6 @@ const useFilter = (initialProducts, filterConfig ) => {
 
 
         let searchFiltererData = initialProducts?.filter((item) => {
-            console.log(categories,"usefilter categories");
 
             
 
@@ -44,7 +43,6 @@ const useFilter = (initialProducts, filterConfig ) => {
 
         }) 
 
-        console.log("pricefiltertdata",priceFilterData , );
 
 
 

@@ -331,9 +331,8 @@ function App() {
 						htmlFor="my-drawer"
 						className="btn lg:hidden rounded-sm fixed bottom-16 right-5 btn-primary text-xl"
 					>
-						Filter
+						
 					</label>
-					<button className=" ">Filter</button>
 				</div>
 				<div className="drawer-side">
 					<label
@@ -383,7 +382,7 @@ function App() {
 								</button>
 							</form>
 							<h1 className="text-2xl mt-8 px-4 font-medium">
-								Filter Check
+								Filter Category
 							</h1>
 
 							<div className="text-base mt-5 font-normal text-black ">

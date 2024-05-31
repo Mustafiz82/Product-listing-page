@@ -18,7 +18,7 @@ const ProductDetailModal = ({ item }) => {
                                 <img src={image}  alt={title}  className="w-96 max-h-[400px]  object-scale-down  mx-auto" />
                         </div>
                         <div className="w-96 p-5  flex-1 h-96 ">
-                            <h1 className="text-xl">{title}</h1>
+                            <h1 className="text-2xl font-medium">{title}</h1>
                             
                             <p className="text-2xl p-2 font-medium text-blue-700 border-y-2  border-blue-700 inline-block my-4">${price}</p>
 
