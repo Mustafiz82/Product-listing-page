@@ -66,7 +66,7 @@ const Product = ({ item, showModal }) => {
 							showModal(item);
 						}}
 						href="#"
-						className="btn btn-outline hover:bg-blue-700 hover:border-0 rounded-full text-blue-700"
+						className="btn btn-outline hover:bg-blue-700 hover:border-0 	 hover:text-white text-blue-700"
 					>
 						View Detail
 					</a>
