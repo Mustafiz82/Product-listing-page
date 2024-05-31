@@ -12,12 +12,12 @@ const ProductDetailModal = ({ item }) => {
 		<div>
 			
 			<dialog id="product-detail" className="modal rounded-none">
-				<div className="modal-box rounded-none  min-w-[70%] min-h-[80%]">
-					<div className="flex justify-center items-center">
+				<div className="modal-box rounded-none h-[70%] text-justify md:text-left  min-w-[70%] lg:min-h-[80%]">
+					<div className="flex flex-col lg:flex-row  justify-center items-center">
                         <div className="flex-1">
                                 <img src={image}  alt={title}  className="w-96 max-h-[400px]  object-scale-down  mx-auto" />
                         </div>
-                        <div className="w-96  flex-1 h-96 ">
+                        <div className="w-96 p-5  flex-1 h-96 ">
                             <h1 className="text-xl">{title}</h1>
                             
                             <p className="text-2xl p-2 font-medium text-blue-700 border-y-2  border-blue-700 inline-block my-4">${price}</p>

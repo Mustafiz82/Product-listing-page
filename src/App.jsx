@@ -22,7 +22,7 @@ function App() {
 	const [category, setCategory] = useState([]);
 
 	// State to manage selected categories for filtering
-	const [checkedCategories, setCheckedCategories] = useState([]); 
+	const [checkedCategories, setCheckedCategories] = useState([]);
 
 	// State to store the lowest price for adding min value in highestPrice input
 	const [lowestPrice, setLowestPrice] = useState(0);
@@ -88,7 +88,6 @@ function App() {
 
 	// This function is used to set the sortBy value in filterConfig based on it's previous state
 	const handleSort = () => {
-
 		if (filterConfig.sortBy == "default") {
 			setFilterConfig((prevConfig) => ({
 				...prevConfig,
@@ -112,7 +111,6 @@ function App() {
 		const { id, checked } = event.target;
 
 		if (id && checked) {
-
 			setCheckedCategories((prevCheckedCategories) => {
 				const updatedCategories = [...prevCheckedCategories, id];
 				setFilterConfig((prevConfig) => ({
@@ -134,7 +132,6 @@ function App() {
 			});
 		}
 	};
-	
 
 	// This function takes the lowest price and highest price form input and update it into filterConfig priceHighest and priceLowest
 	const handleSubmitPrice = (e) => {
@@ -147,7 +144,6 @@ function App() {
 			priceLowest: priceLowest,
 		}));
 	};
-
 
 	// This function is used to open modal based on products when view detail button is clicked
 	const showModal = (product) => {
@@ -162,56 +158,62 @@ function App() {
 
 	return (
 		<div className="bg-image  ">
-			{/* Header section  */}
-			<div className="flex      gap-5 px-14 pt-6">
-				<label className="border-[1px] p-2 rounded-lg   flex-grow input-bordered border-blue-700 px-8 flex items-center gap-2">
-					<IoSearch />
-					<input
-						onChange={handleSearchChange}
-						type="text"
-						className="grow bg-transparent outline-none"
-						placeholder="Search Products"
-					/>
-				</label>
-
-				{/* Sort button */}
-
-				<div
-					onClick={handleSort}
-					className="flex  justify-center items-center gap-2 input input-bordered"
-				>
-					Sort by{" "}
-					{filterConfig.sortBy == "descending" ? (
-						<FaArrowDownLong />
-					) : filterConfig.sortBy == "ascending" ? (
-						<FaArrowUpLong />
-					) : (
-						<TbArrowsSort />
-					)}
+			<div className="flex flex-col  md:flex-row      gap-5 px-5 lg:px-14 pt-6">
+				<div className="flex-grow">
+					<label className="border-[1px] p-2 rounded-lg   flex-grow input-bordered border-blue-700 px-8 flex items-center gap-2">
+						<IoSearch />
+						<input
+							onChange={handleSearchChange}
+							type="text"
+							className="grow bg-transparent outline-none"
+							placeholder="Search Products"
+						/>
+					</label>
 				</div>
 
-				{/* Layout changing Button */}
-				<div className="join text-2xl ">
-					<span
-						onClick={() => {
-							setLayout("grid");
-						}}
-						className={` ${
-							layout == "grid" ? "bg-[#D1C4E9] text-blue-700" : ""
-						}   join-item btn`}
+				<div className="flex gap-3">
+					{/* Sort button */}
+					<div
+						onClick={handleSort}
+						className="flex flex-1  justify-center items-center gap-2 input input-bordered"
 					>
-						<BsGridFill className="text-xl  bg-" />
-					</span>
-					<span
-						onClick={() => {
-							setLayout("List");
-						}}
-						className={` ${
-							layout == "grid" ? "" : "bg-[#D1C4E9] text-blue-700"
-						}   join-item btn`}
-					>
-						<FaList className="text-xl " />
-					</span>
+						Sort by{" "}
+						{filterConfig.sortBy == "descending" ? (
+							<FaArrowDownLong />
+						) : filterConfig.sortBy == "ascending" ? (
+							<FaArrowUpLong />
+						) : (
+							<TbArrowsSort />
+						)}
+					</div>
+
+					{/* Layout changing Button */}
+					<div className="join text-2xl ">
+						<span
+							onClick={() => {
+								setLayout("grid");
+							}}
+							className={` ${
+								layout == "grid"
+									? "bg-[#D1C4E9] text-blue-700"
+									: ""
+							}   join-item btn`}
+						>
+							<BsGridFill className="text-xl  bg-" />
+						</span>
+						<span
+							onClick={() => {
+								setLayout("List");
+							}}
+							className={` ${
+								layout == "grid"
+									? ""
+									: "bg-[#D1C4E9] text-blue-700"
+							}   join-item btn`}
+						>
+							<FaList className="text-xl " />
+						</span>
+					</div>
 				</div>
 			</div>
 
@@ -219,30 +221,37 @@ function App() {
 
 			<div className="flex mt-4 ">
 				{/* Category section */}
-				<div className="w-1/4    pl-10 pt-0 ">
-					<h1 className="text-2xl  px-4 font-medium">Filter From</h1>
+				<div className=" hidden lg:block w-1/4 h-auto bg-transparent p-4 lg:p-0  lg:pl-10 pt-0 ">
+					<h1 className="text-2xl mt-10 md:mt-0   px-4 font-medium">
+						Filter From
+					</h1>
 
 					<form
 						onSubmit={handleSubmitPrice}
-						className="flex mt-5 px-4 items-center gap-4"
+						className="lg:flex mt-5 px-4 items-center gap-4"
 					>
-						<input
-							onChange={(e) => setLowestPrice(e.target.value)}
-							type="number"
-							className="input bg-transparent border-black input-bordered w-full  "
-							name="lowest_price"
-							placeholder="$ From"
-							min={0}
-						/>
-						<span className="font-bold">-</span>
-						<input
-							type="number"
-							className="input  bg-transparent border-black input-bordered w-full  "
-							name="highest_price"
-							placeholder="$ To"
-							min={lowestPrice}
-						/>
-						<button type="submit" className="btn btn-primary">
+						<div className="flex gap-2 items-center">
+							<input
+								onChange={(e) => setLowestPrice(e.target.value)}
+								type="number"
+								className="input bg-transparent border-black input-bordered w-full  "
+								name="lowest_price"
+								placeholder="$ From"
+								min={0}
+							/>
+							<span className="font-bold">-</span>
+							<input
+								type="number"
+								className="input  bg-transparent border-black input-bordered w-full  "
+								name="highest_price"
+								placeholder="$ To"
+								min={lowestPrice}
+							/>
+						</div>
+						<button
+							type="submit"
+							className="btn mt-4 lg:mt-0 w-full lg:w-fit btn-primary"
+						>
 							{" "}
 							<MdOutlineArrowForwardIos />
 						</button>
@@ -274,9 +283,9 @@ function App() {
 				</div>
 
 				{/* product viewing section */}
-				<div className="px-5  w-3/4 ">
+				<div className="px-5 w-full lg:w-3/4 ">
 					{layout == "grid" ? (
-						<div className="grid  grid-cols-3 gap-5">
+						<div className="grid  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 							{filterProduct?.map((product) => (
 								<Product
 									key={product.id}
@@ -306,6 +315,99 @@ function App() {
 							/>
 						</div>
 					)}
+				</div>
+			</div>
+
+			{/* Drayer will be shown when clicking filter button on mobile or tablet screen */}
+			<div className="drawer">
+				<input
+					id="my-drawer"
+					type="checkbox"
+					className="drawer-toggle"
+				/>
+				<div className="drawer-content">
+					{/* Page content here */}
+					<label
+						htmlFor="my-drawer"
+						className="btn lg:hidden rounded-sm fixed bottom-16 right-5 btn-primary text-xl"
+					>
+						Filter
+					</label>
+					<button className=" ">Filter</button>
+				</div>
+				<div className="drawer-side">
+					<label
+						htmlFor="my-drawer"
+						aria-label="close sidebar"
+						className="drawer-overlay"
+					></label>
+					<ul className="menu w-80 min-h-full bg-base-200 text-base-content">
+						{/* Sidebar content here */}
+						<div className=" h-screen lg:h-auto   ">
+							<h1 className="text-2xl mt-10 md:mt-0   px-4 font-medium">
+								Filter From
+							</h1>
+
+							<form
+								onSubmit={handleSubmitPrice}
+								className="lg:flex mt-5 px-4 items-center gap-4"
+							>
+								<div className="flex gap-2 items-center">
+									<input
+										required
+										onChange={(e) =>
+											setLowestPrice(e.target.value)
+										}
+										type="number"
+										className="input bg-transparent border-black input-bordered w-full  "
+										name="lowest_price"
+										placeholder="$ From"
+										min={0}
+									/>
+									<span className="font-bold">-</span>
+									<input
+										required
+										type="number"
+										className="input  bg-transparent border-black input-bordered w-full  "
+										name="highest_price"
+										placeholder="$ To"
+										min={lowestPrice}
+									/>
+								</div>
+								<button
+									type="submit"
+									className="btn mt-4 lg:mt-0 w-full lg:w-fit btn-primary"
+								>
+									{" "}
+									<MdOutlineArrowForwardIos />
+								</button>
+							</form>
+							<h1 className="text-2xl mt-8 px-4 font-medium">
+								Filter Check
+							</h1>
+
+							<div className="text-base mt-5 font-normal text-black ">
+								{[...category]?.map((item, index) => (
+									<label
+										key={index}
+										htmlFor={item}
+										className="py-2 px-4 flex justify-between items-center"
+									>
+										<label className="flex gap-2">
+											<input
+												type="checkbox"
+												id={item}
+												className="checkbox rounded-none checkbox-sm checkbox-primary"
+												defaultChecked
+												onChange={handleCheckboxChange}
+											/>
+											<h2 className=" "> {item}</h2>
+										</label>
+									</label>
+								))}
+							</div>
+						</div>
+					</ul>
 				</div>
 			</div>
 		</div>
